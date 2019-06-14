@@ -93,6 +93,14 @@ export class Gamepad {
      * Represents a pose-enabled controller
      */
     public static POSE_ENABLED = 3;
+    /**
+     * Represents a DualShock 3 controller
+     */
+    public static DUALSHOCK3 = 4;
+    /**
+     * Represents a DualShock 4 controller
+     */
+    public static DUALSHOCK4 = 5;
 
     /**
      * Specifies whether the left control stick should be Y-inverted

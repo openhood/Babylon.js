@@ -8,6 +8,9 @@ import { _DepthCullingState, _StencilState, _AlphaState } from "../States/index"
 
 import { PoseEnabledControllerHelper } from "../Gamepads/Controllers/poseEnabledController";
 import { Xbox360Pad } from "./xboxGamepad";
+import { DualShockPad } from './DualShockGamepads/dualShockGamepad';
+import { DualShock3Pad } from './DualShockGamepads/dualShock3Gamepad';
+import { DualShock4Pad } from './DualShockGamepads/dualShock4Gamepad';
 import { Gamepad, GenericPad } from "./gamepad";
 /**
  * Manager for handling gamepads
@@ -167,10 +170,22 @@ export class GamepadManager {
         }
 
         var newGamepad;
-        var dualShock: boolean = ((<string>gamepad.id).search("054c") !== -1);
-        var xboxOne: boolean = ((<string>gamepad.id).search("Xbox One") !== -1);
-        if (xboxOne || (<string>gamepad.id).search("Xbox 360") !== -1 || (<string>gamepad.id).search("xinput") !== -1) {
+        const gamepadId = <string>gamepad.id;
+
+        console.error("gamepadId", gamepadId);
+
+        var dualShock: boolean = DualShockPad.matchId(gamepadId);
+        var dualShock3: boolean = dualShock && DualShock3Pad.matchId(gamepadId);
+        var dualShock4: boolean = dualShock && DualShock4Pad.matchId(gamepadId);
+        var xboxOne: boolean = (gamepadId.search("Xbox One") !== -1);
+        if (xboxOne || gamepadId.search("Xbox 360") !== -1 || gamepadId.search("xinput") !== -1) {
             newGamepad = new Xbox360Pad(gamepad.id, gamepad.index, gamepad, xboxOne);
+        } else if (dualShock3) {
+            console.log('dualshock3pad');
+            newGamepad = new DualShock3Pad(gamepad.id, gamepad.index, gamepad);
+        } else if (dualShock4) {
+            console.log('dualshock4pad');
+            newGamepad = new DualShock4Pad(gamepad.id, gamepad.index, gamepad);
         }
         // if pose is supported, use the (WebVR) pose enabled controller, ignore DualShock (ps4) as they have a pose but should not be used for webVR
         else if (gamepad.pose && !dualShock) {
